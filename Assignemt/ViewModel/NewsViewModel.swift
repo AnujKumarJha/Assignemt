@@ -12,7 +12,7 @@ class NewsViewModel: ObservableObject {
 
 
 
-    private let apiKey = "839a1105e6de4e1db7cdc248c93693dd"
+    private let apiKey = "f1e9cee34fa8475d9da09e9e6376865a"
     private let baseURL = "https://newsapi.org/v2/top-headlines"
 
     func fetchTopHeadlines() {
