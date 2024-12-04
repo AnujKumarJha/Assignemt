@@ -1,9 +1,3 @@
-//
-//  AssignemtApp.swift
-//  Assignemt
-//
-//  Created by ANUJ KUMAR on 03/12/24.
-//
 
 import SwiftUI
 
@@ -11,7 +5,7 @@ import SwiftUI
 struct AssignemtApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NewsView()
         }
     }
 }
