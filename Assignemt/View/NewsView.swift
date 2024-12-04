@@ -5,9 +5,9 @@ struct NewsView: View {
     let categories = ["business", "sports", "general", "health"]
 
     var body: some View {
-        NavigationView {
-            TabView {
-                // Top Headlines Tab
+        TabView {
+            // Top Headlines Tab
+            NavigationView {
                 VStack {
                     // Picker for selecting category
                     Picker("Category", selection: $viewModel.selectedCategory) {
@@ -76,8 +76,8 @@ struct NewsView: View {
                     .listStyle(PlainListStyle())
                     .padding(.bottom, 10) // Add bottom padding here
                 }
-                .navigationTitle("Top Headlines")
-                .navigationBarTitleDisplayMode(.large)
+                .navigationTitle("Top Headlines") // Set title for this view
+                .navigationBarTitleDisplayMode(.large) // Inline title display
                 .onAppear {
                     viewModel.fetchTopHeadlines()
                     viewModel.loadBookmarks()
@@ -88,17 +88,17 @@ struct NewsView: View {
                 .sheet(item: $viewModel.selectedURL) { identifiableURL in
                     WebView(url: identifiableURL.url) // Use URL from IdentifiableURL
                 }
-                .tabItem {
-                    Label("Headlines", systemImage: "newspaper")
-                }
-
-                // Bookmarks Tab
-                BookmarksView(viewModel: viewModel)
-                    .tabItem {
-                        Label("Bookmarks", systemImage: "bookmark")
-                    }
             }
-            .navigationViewStyle(StackNavigationViewStyle())
+            .tabItem {
+                Label("Headlines", systemImage: "newspaper")
+            }
+
+            // Bookmarks Tab
+            BookmarksView(viewModel: viewModel)
+                .tabItem {
+                    Label("Bookmarks", systemImage: "bookmark")
+                }
         }
+        .navigationViewStyle(StackNavigationViewStyle()) // Ensure navigation style is consistent
     }
 }

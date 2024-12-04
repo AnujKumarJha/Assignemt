@@ -63,7 +63,7 @@ class NewsViewModel: ObservableObject {
         UserDefaults.standard.set(Array(allBookmarkedArticles), forKey: "bookmarkedArticles")
         loadBookmarks() // Reload the bookmarks
     }
-    
+
     private func removeBookmark(article: Article) {
         allBookmarkedArticles.remove(article.id.uuidString) // Remove UUID as String
         UserDefaults.standard.set(Array(allBookmarkedArticles), forKey: "bookmarkedArticles")
