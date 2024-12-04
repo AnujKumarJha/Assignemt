@@ -1,9 +1,3 @@
-//
-//  WebView.swift
-//  Assignemt
-//
-//  Created by ANUJ KUMAR on 03/12/24.
-//
 
 import SwiftUI
 import WebKit

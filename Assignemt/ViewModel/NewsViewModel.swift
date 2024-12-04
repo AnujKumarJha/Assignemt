@@ -18,24 +18,24 @@ class NewsViewModel: ObservableObject {
     func fetchTopHeadlines() {
         guard let url = URL(string: "\(baseURL)?category=\(selectedCategory)&apiKey=\(apiKey)") else { return }
 
-                // Start the network request to fetch the articles
-                URLSession.shared.dataTaskPublisher(for: url)
-                    .map { $0.data }
-                    .decode(type: NewsResponse.self, decoder: JSONDecoder())
-                    .map { $0.articles } // Assuming the API returns an 'articles' key
-                    .receive(on: DispatchQueue.main)
-                    .sink { completion in
-                        switch completion {
-                        case .failure(let error):
-                            print("Error fetching articles: \(error.localizedDescription)")
-                        case .finished:
-                            break
-                        }
-                    } receiveValue: { [weak self] articles in
-                        self?.articles = articles
-                        self?.loadBookmarks() // Reload bookmarked articles
-                    }
-                    .store(in: &cancellables)
+        // Start the network request to fetch the articles
+        URLSession.shared.dataTaskPublisher(for: url)
+            .map { $0.data }
+            .decode(type: NewsResponse.self, decoder: JSONDecoder())
+            .map { $0.articles } // Assuming the API returns an 'articles' key
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let error):
+                    print("Error fetching articles: \(error.localizedDescription)")
+                case .finished:
+                    break
+                }
+            } receiveValue: { [weak self] articles in
+                self?.articles = articles
+                self?.loadBookmarks() // Reload bookmarked articles
+            }
+            .store(in: &cancellables)
     }
 
     func loadBookmarks() {
@@ -63,7 +63,7 @@ class NewsViewModel: ObservableObject {
         UserDefaults.standard.set(Array(allBookmarkedArticles), forKey: "bookmarkedArticles")
         loadBookmarks() // Reload the bookmarks
     }
-
+    
     private func removeBookmark(article: Article) {
         allBookmarkedArticles.remove(article.id.uuidString) // Remove UUID as String
         UserDefaults.standard.set(Array(allBookmarkedArticles), forKey: "bookmarkedArticles")
