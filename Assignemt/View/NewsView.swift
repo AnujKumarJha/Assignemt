@@ -7,6 +7,7 @@ struct NewsView: View {
     var body: some View {
         NavigationView {
             TabView {
+                // Top Headlines Tab
                 VStack {
                     // Picker for selecting category
                     Picker("Category", selection: $viewModel.selectedCategory) {
@@ -16,11 +17,35 @@ struct NewsView: View {
                     }
                     .pickerStyle(.segmented)
                     .padding(.horizontal)
-                    .padding(.top,50) // Adjust for better spacing below the navigation title
+                    .padding(.top, 50) // Adjust for better spacing below the navigation title
 
                     // Articles List
                     List(viewModel.articles) { article in
                         VStack(alignment: .leading, spacing: 10) {
+                            // AsyncImage to load image from URL
+                            if let imageURL = article.urlToImage, let url = URL(string: imageURL) {
+                                AsyncImage(url: url) { phase in
+                                    switch phase {
+                                    case .empty:
+                                        ProgressView() // Loading indicator
+                                            .frame(width: 100, height: 100) // Default frame for loading
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .scaledToFit() // Scales the image to fit within the given frame
+                                            .frame(width: 370, height: 200) // Increase the width/height as needed
+                                            .clipShape(RoundedRectangle(cornerRadius: 10)) // Optional rounding
+                                    case .failure:
+                                        Image(systemName: "photo") // Default image on failure
+                                            .resizable()
+                                            .frame(width: 100, height: 100)
+                                    @unknown default:
+                                        EmptyView()
+                                    }
+                                }
+                                .padding(.bottom, 10) // Padding for the image
+                            }
+
                             Text(article.title)
                                 .font(.headline)
                                 .foregroundColor(.blue)
@@ -45,33 +70,14 @@ struct NewsView: View {
                                         .padding(5)
                                 }
                             }
-
-                            // Article image
-                            if let urlToImage = article.urlToImage, let imageURL = URL(string: urlToImage) {
-                                AsyncImage(url: imageURL) { image in
-                                    image
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(height: 200)
-                                        .cornerRadius(10)
-                                } placeholder: {
-                                    ProgressView()
-                                }
-                            }
-
-                            Text(article.publishedAt)
-                                .font(.caption)
-                                .foregroundColor(.gray)
                         }
-                        .padding(.vertical, 8)
+                        .padding(.vertical, 8) // Add padding between each article row
                     }
                     .listStyle(PlainListStyle())
+                    .padding(.bottom, 10) // Add bottom padding here
                 }
-                .navigationTitle("Top Headlines") // Navigation title is properly set here
-                .navigationBarTitleDisplayMode(.large) // Ensures the title is prominent
-                .tabItem {
-                    Label("Headlines", systemImage: "newspaper")
-                }
+                .navigationTitle("Top Headlines")
+                .navigationBarTitleDisplayMode(.large)
                 .onAppear {
                     viewModel.fetchTopHeadlines()
                     viewModel.loadBookmarks()
@@ -80,8 +86,17 @@ struct NewsView: View {
                     viewModel.fetchTopHeadlines()
                 }
                 .sheet(item: $viewModel.selectedURL) { identifiableURL in
-                    WebView(url: identifiableURL.url)
+                    WebView(url: identifiableURL.url) // Use URL from IdentifiableURL
                 }
+                .tabItem {
+                    Label("Headlines", systemImage: "newspaper")
+                }
+
+                // Bookmarks Tab
+                BookmarksView(viewModel: viewModel)
+                    .tabItem {
+                        Label("Bookmarks", systemImage: "bookmark")
+                    }
             }
             .navigationViewStyle(StackNavigationViewStyle())
         }
